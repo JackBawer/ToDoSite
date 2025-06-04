@@ -66,10 +66,10 @@ function Todo() {
               Delete
             </button>
             <button className="move-button" onClick={() => moveTaskUp(index)}>
-              UP
+              ☝
             </button>
             <button className="move-button" onClick={() => moveTaskDown(index)}>
-              DOWN
+              👇
             </button>
           </li>
         ))}
