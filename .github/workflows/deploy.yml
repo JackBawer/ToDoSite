@@ -10,11 +10,13 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-name: 'pages-artifact'
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -23,13 +25,25 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build production files
+      - name: Build app
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v1
         with:
-          folder: dist
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-to-pages.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy-to-pages
+        uses: actions/deploy-pages@v1
 
